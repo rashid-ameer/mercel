@@ -1,3 +1,4 @@
+"use server";
 import { lucia } from "@/auth";
 import prisma from "@/lib/prisma";
 import { loginSchema } from "@/lib/schemas";

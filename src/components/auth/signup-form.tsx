@@ -8,12 +8,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
+} from "@/components/ui/form";
 import { Signup } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "@/lib/schemas";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Input } from "@/components/ui/input";
 import { useState, useTransition } from "react";
 import { signup } from "@/app/(auth)/signup/action";
 import { LoadingButton, PasswordInput } from "@/components";
@@ -32,7 +31,7 @@ function SignupForm() {
   });
 
   // submit
-  const onSubmit = (formData: Signup) => {
+  const onSubmit = async (formData: Signup) => {
     startTransition(async () => {
       const { error } = await signup(formData);
       if (error) {
@@ -50,7 +49,7 @@ function SignupForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="!text-inherit">Username</FormLabel>
+              <FormLabel className="">Username</FormLabel>
               <FormControl>
                 <Input {...field} placeholder="John" />
               </FormControl>
@@ -63,7 +62,7 @@ function SignupForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="!text-inherit">Email</FormLabel>
+              <FormLabel className="">Email</FormLabel>
               <FormControl>
                 <Input {...field} type="email" placeholder="john@gmail.com" />
               </FormControl>
@@ -76,7 +75,7 @@ function SignupForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="!text-inherit">Password</FormLabel>
+              <FormLabel className="">Password</FormLabel>
               <FormControl>
                 <PasswordInput
                   {...field}
