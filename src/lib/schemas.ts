@@ -15,6 +15,6 @@ export const signupSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: requiredString("Email is required").email("Invalid email address"),
+  username: requiredString("Username is required"),
   password: requiredString("Password is required"),
 });
