@@ -1,6 +1,6 @@
 import { validateRequest } from "@/auth";
 import Header from "@/components/header";
-import SessionProviderContext from "@/contexts/session-provider-context";
+import SessionProviderContext from "@/contexts/session-provider";
 import { redirect, RedirectType } from "next/navigation";
 
 async function MainLayout({ children }: { children: React.ReactNode }) {

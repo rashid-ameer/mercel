@@ -1,7 +1,7 @@
-import { SessionContext } from "@/contexts/session-provider-context";
+import { SessionContext } from "@/contexts/session-provider";
 import { useContext } from "react";
 
-export default function useSessionProvider() {
+export default function useSession() {
   const session = useContext(SessionContext);
 
   if (!session) {
