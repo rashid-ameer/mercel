@@ -3,7 +3,10 @@ import { lucia } from "@/auth";
 import prisma from "@/lib/prisma";
 import { loginSchema } from "@/lib/schemas";
 import { verify } from "@node-rs/argon2";
-import { isRedirectError } from "next/dist/client/components/redirect";
+import {
+  isRedirectError,
+  RedirectType,
+} from "next/dist/client/components/redirect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -55,7 +58,7 @@ export async function login(credentials: unknown) {
     );
 
     // redirect user to homepage
-    return redirect("/");
+    return redirect("/", RedirectType.replace);
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;

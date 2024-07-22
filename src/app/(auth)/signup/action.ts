@@ -5,7 +5,10 @@ import prisma from "@/lib/prisma";
 import { signupSchema } from "@/lib/schemas";
 import { hash } from "@node-rs/argon2";
 import { generateIdFromEntropySize } from "lucia";
-import { isRedirectError } from "next/dist/client/components/redirect";
+import {
+  isRedirectError,
+  RedirectType,
+} from "next/dist/client/components/redirect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -80,7 +83,7 @@ export async function signup(credentials: unknown): Promise<{ error: string }> {
       sessionCookie.attributes,
     );
 
-    return redirect("/");
+    return redirect("/", RedirectType.replace);
   } catch (error) {
     // if the error is redirect error
     if (isRedirectError(error)) {

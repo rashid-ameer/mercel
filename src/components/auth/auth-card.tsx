@@ -4,7 +4,7 @@ type AuthCardProps = {
 
 function AuthCard({ children }: AuthCardProps) {
   return (
-    <div className="flex h-full max-h-[40rem] w-full max-w-[64rem] overflow-hidden rounded-md shadow-2xl">
+    <div className="flex w-full max-w-[64rem] overflow-hidden rounded-md shadow-2xl md:h-full md:max-h-[40rem]">
       {children}
     </div>
   );
