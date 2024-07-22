@@ -5,13 +5,16 @@ import { Prisma } from "@prisma/client";
 export type Signup = z.infer<typeof signupSchema>;
 export type Login = z.infer<typeof loginSchema>;
 
+export const userDataSelect = {
+  id: true,
+  username: true,
+  avatarUrl: true,
+  displayName: true,
+} satisfies Prisma.UserSelect;
+
 export const postDataInclude = {
   user: {
-    select: {
-      username: true,
-      avatarUrl: true,
-      displayName: true,
-    },
+    select: userDataSelect,
   },
 } satisfies Prisma.PostInclude;
 

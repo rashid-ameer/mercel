@@ -6,15 +6,22 @@ interface UserAvatarProps {
   className?: string;
   size?: number;
   avatarUrl?: string | null;
+  priority?: boolean;
 }
 
-function UserAvatar({ className, size = 48, avatarUrl }: UserAvatarProps) {
+function UserAvatar({
+  className,
+  size = 48,
+  avatarUrl,
+  priority = false,
+}: UserAvatarProps) {
   return (
     <Image
       src={avatarUrl || avatarPlaceholder}
       alt="User avatar"
       width={size}
       height={size}
+      priority={priority}
       className={cn(
         "aspect-square rounded-full bg-secondary object-cover",
         className,
