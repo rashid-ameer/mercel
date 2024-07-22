@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const requiredString = (msg: string) => z.string().trim().min(1, msg);
 
+// signup schema
 export const signupSchema = z.object({
   email: requiredString("Email is required").email("Invalid email address"),
   username: requiredString("Username is required").regex(
@@ -14,7 +15,13 @@ export const signupSchema = z.object({
   ),
 });
 
+// login schema
 export const loginSchema = z.object({
   username: requiredString("Username is required"),
   password: requiredString("Password is required"),
+});
+
+//  post schema
+export const createPostSchema = z.object({
+  content: requiredString("Content is required"),
 });
