@@ -14,7 +14,7 @@ import { loginSchema } from "@/lib/schemas";
 import { useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import { login } from "@/app/(auth)/login/action";
-import { LoadingButton, PasswordInput } from "@/components";
+import { LoadingButton, PasswordInput } from "@/components/auth";
 
 function LoginForm() {
   const [error, setError] = useState<string>();

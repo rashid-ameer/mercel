@@ -1,3 +1,4 @@
+"use client";
 import { Session, User } from "lucia";
 import { createContext } from "react";
 

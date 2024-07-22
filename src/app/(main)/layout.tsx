@@ -1,4 +1,5 @@
 import { validateRequest } from "@/auth";
+import Header from "@/components/header";
 import SessionProviderContext from "@/contexts/session-provider-context";
 import { redirect, RedirectType } from "next/navigation";
 
@@ -11,7 +12,10 @@ async function MainLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SessionProviderContext session={session}>
-      {children}
+      <div className="min-h-screen">
+        <Header />
+        <div className="mx-auto max-w-7xl">{children}</div>
+      </div>
     </SessionProviderContext>
   );
 }
