@@ -6,10 +6,13 @@ import { Button } from "../../ui/button";
 import UserAvatar from "../../user-avatar";
 import useSession from "@/hooks/useSessionProvider";
 import "./styles.css";
-import { createPost } from "@/actions/post/actions";
+import { useCreatePostMutation } from "@/lib/react-query-utils";
+import { useToast } from "@/components/ui/use-toast";
 
 function PostEditor() {
+  const { toast } = useToast();
   const { user } = useSession();
+  const postCreateMutation = useCreatePostMutation();
 
   // editor configuration
   const editor = useEditor({
@@ -29,7 +32,17 @@ function PostEditor() {
 
   // submit handler
   const onSubmit = async () => {
-    await createPost({ content: input });
+    postCreateMutation.mutate(input, {
+      onSuccess: () => {
+        toast({ description: "Post created successfully." });
+      },
+      onError: () => {
+        toast({
+          variant: "destructive",
+          description: "Failed to create post. Try again.",
+        });
+      },
+    });
     editor?.commands.clearContent();
   };
 
@@ -46,7 +59,7 @@ function PostEditor() {
       <Button
         onClick={onSubmit}
         className="ml-auto flex min-w-20 rounded-full"
-        disabled={!input.trim()}
+        disabled={postCreateMutation.isPending}
       >
         Post
       </Button>

@@ -3,6 +3,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { createPostSchema } from "@/lib/schemas";
+import { postDataInclude } from "@/lib/types";
 
 export async function createPost(input: unknown) {
   // checking if user if authorized
@@ -12,18 +13,16 @@ export async function createPost(input: unknown) {
   }
 
   // validate input
-  const validateResult = createPostSchema.safeParse(input);
-  if (!validateResult.success) {
-    return {
-      error: "Invalid input",
-    };
-  }
+  const { content } = createPostSchema.parse({ content: input });
 
   // create post
-  await prisma.post.create({
+  const post = await prisma.post.create({
     data: {
-      content: validateResult.data.content,
+      content: content,
       userId: session.user.id,
     },
+    include: postDataInclude,
   });
+
+  return post;
 }

@@ -1,10 +1,9 @@
 "use client";
 import { InfiniteScroll } from "@/components";
 import { PagePost } from "@/lib/types";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import Post from "./post";
-import kyInstance from "@/lib/ky";
 import { CircularLoader, PostsLoadingSkeleton } from "@/components/loaders";
+import { usePostsInfiniteQuery } from "@/lib/react-query-utils";
 
 function PostFeed() {
   const {
@@ -14,18 +13,7 @@ function PostFeed() {
     hasNextPage,
     status,
     error,
-  } = useInfiniteQuery({
-    queryKey: ["post-feed", "for-you"],
-    queryFn: ({ pageParam }) =>
-      kyInstance
-        .get(
-          "/api/posts/for-you",
-          pageParam ? { searchParams: { cursor: pageParam } } : {},
-        )
-        .json<PagePost>(),
-    initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  });
+  } = usePostsInfiniteQuery();
 
   const handleBottomReached = () => {
     if (!isFetchingNextPage && hasNextPage) {
