@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { logout } from "@/app/(auth)/action";
 import useSession from "@/hooks/useSessionProvider";
 import { useTheme } from "next-themes";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface UserButtonProps {
   className?: string;
@@ -28,6 +29,14 @@ interface UserButtonProps {
 function UserButton({ className }: UserButtonProps) {
   const { user } = useSession();
   const { theme, setTheme } = useTheme();
+
+  const queryClient = useQueryClient();
+
+  // handle logout
+  const handleLogout = async () => {
+    queryClient.clear();
+    await logout();
+  };
 
   return (
     <DropdownMenu>
@@ -86,10 +95,7 @@ function UserButton({ className }: UserButtonProps) {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <button
-            className="w-full cursor-pointer"
-            onClick={async () => await logout()}
-          >
+          <button className="w-full cursor-pointer" onClick={handleLogout}>
             <LogOutIcon className="mr-2 size-4" />
             Logout
           </button>
