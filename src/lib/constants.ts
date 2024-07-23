@@ -20,3 +20,6 @@ export const MENUBAR_DATA = [
     icon: "bookmark",
   },
 ];
+
+// no of post per page
+export const POSTS_PER_PAGE = 10;

@@ -96,7 +96,6 @@ function UserButton({ className }: UserButtonProps) {
 
         <DropdownMenuItem asChild>
           <button className="w-full cursor-pointer" onClick={handleLogout}>
-            <LogOutIcon className="mr-2 size-4" />
             Logout
           </button>
         </DropdownMenuItem>
