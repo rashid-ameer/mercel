@@ -25,3 +25,6 @@ export const loginSchema = z.object({
 export const createPostSchema = z.object({
   content: requiredString("Content is required"),
 });
+
+// delete post schema
+export const deletePostSchema = requiredString("Post ID is required");

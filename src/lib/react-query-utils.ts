@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import kyInstance from "./ky";
 import { PagePost } from "./types";
-import { createPost } from "@/actions/post/actions";
+import { createPost, deletePost } from "@/actions/post/actions";
 
 // loading infinite posts request
 export const usePostsInfiniteQuery = () => {
@@ -62,6 +62,36 @@ export const useCreatePostMutation = () => {
         queryKey: queryFilter.queryKey,
         predicate: (query) => !query.state.data,
       });
+    },
+  });
+};
+
+// deleting a post
+export const useDeletePostMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deletePost,
+    onSuccess: async (deletedPost) => {
+      // query filters
+      const queryFilter: QueryFilters = { queryKey: ["post-feed"] };
+      // cancel any ongoing queries
+      await queryClient.cancelQueries(queryFilter);
+      // updating cache
+      queryClient.setQueriesData<InfiniteData<PagePost, string | null>>(
+        queryFilter,
+        (oldData) => {
+          if (!oldData) return;
+
+          return {
+            pageParams: oldData.pageParams,
+            pages: oldData.pages.map((page) => ({
+              nextCursor: page.nextCursor,
+              posts: page.posts.filter((post) => post.id !== deletedPost.id),
+            })),
+          };
+        },
+      );
     },
   });
 };

@@ -13,7 +13,11 @@ function LoadingButton({
   ...props
 }: LoadingButtonProps) {
   return (
-    <Button disabled={loading || disabled} className={cn(className)} {...props}>
+    <Button
+      disabled={loading || disabled}
+      className={cn("gap-3", className)}
+      {...props}
+    >
       {loading && <Loader2 className="size-5 animate-spin" />}
       {props.children}
     </Button>

@@ -1,6 +1,5 @@
 "use client";
 import { InfiniteScroll } from "@/components";
-import { PagePost } from "@/lib/types";
 import Post from "./post";
 import { CircularLoader, PostsLoadingSkeleton } from "@/components/loaders";
 import { usePostsInfiniteQuery } from "@/lib/react-query-utils";
