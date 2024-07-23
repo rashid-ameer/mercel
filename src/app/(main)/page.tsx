@@ -7,7 +7,7 @@ function Home() {
       <div className="flex-1">
         <PostEditor />
 
-        <section className="mt-5 min-w-0 space-y-5">
+        <section className="mt-5 space-y-5">
           <PostFeed />
         </section>
       </div>

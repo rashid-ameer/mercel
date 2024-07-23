@@ -4,18 +4,12 @@ import { TPost } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import Post from "./post";
+import kyInstance from "@/lib/ky";
 
 function PostFeed() {
   const query = useQuery<TPost[]>({
     queryKey: ["post-feed", "for-you"],
-    queryFn: async () => {
-      const res = await fetch("/api/posts/for-you");
-      if (!res.ok) {
-        throw new Error(`Request failed with status code ${res.status}`);
-      }
-
-      return res.json();
-    },
+    queryFn: kyInstance.get("/api/posts/for-you").json<TPost[]>,
   });
 
   if (query.status === "pending") {

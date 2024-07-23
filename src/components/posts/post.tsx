@@ -27,7 +27,7 @@ function Post({ post }: PostProps) {
             href={`/posts/${post.id}`}
             className="text-sm text-muted-foreground hover:underline"
           >
-            {/* {getRelativeTime(post.createdAt)} */}
+            {getRelativeTime(post.createdAt)}
           </Link>
         </div>
       </div>
