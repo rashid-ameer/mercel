@@ -24,3 +24,8 @@ export type PagePost = {
   posts: TPost[];
   nextCursor: string | null;
 };
+
+export type FollowersInfo = {
+  isFollowedByUser: boolean;
+  followers: number;
+};

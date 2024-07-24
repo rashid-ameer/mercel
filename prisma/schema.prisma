@@ -21,8 +21,21 @@ model User {
   sessions     Session[]
   posts        Post[]
   createdAt    DateTime  @default(now())
+  followers    Follow[]  @relation("Follower")
+  following    Follow[]  @relation("Following")
 
   @@map("users")
+}
+
+model Follow {
+  followerId String
+  follower   User   @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+
+  followingId String
+  following   User   @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@map("follows")
 }
 
 model Session {

@@ -3,10 +3,11 @@ import {
   QueryFilters,
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import kyInstance from "./ky";
-import { PagePost } from "./types";
+import { FollowersInfo, PagePost } from "./types";
 import { createPost, deletePost } from "@/actions/post/actions";
 
 // loading infinite posts request
@@ -93,5 +94,19 @@ export const useDeletePostMutation = () => {
         },
       );
     },
+  });
+};
+
+// follower information
+export const useFollowInfoQuery = (
+  userId: string,
+  initialData: FollowersInfo,
+) => {
+  return useQuery({
+    queryKey: ["follower-info", userId],
+    queryFn: () =>
+      kyInstance.get(`/api/users/${userId}/followers`).json<FollowersInfo>(),
+    initialData: initialData,
+    staleTime: Infinity,
   });
 };
