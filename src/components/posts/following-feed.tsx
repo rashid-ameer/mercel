@@ -12,7 +12,7 @@ function PostFeed() {
     hasNextPage,
     status,
     error,
-  } = usePostsInfiniteQuery("for-you");
+  } = usePostsInfiniteQuery("following");
 
   const handleBottomReached = () => {
     if (!isFetchingNextPage && hasNextPage) {

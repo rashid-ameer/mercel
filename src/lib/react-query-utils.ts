@@ -12,13 +12,13 @@ import { FollowersInfo, PagePost } from "./types";
 import { createPost, deletePost } from "@/actions/post/actions";
 
 // loading infinite posts request
-export const usePostsInfiniteQuery = () => {
+export const usePostsInfiniteQuery = (endPoint: string) => {
   return useInfiniteQuery({
     queryKey: ["post-feed", "for-you"],
     queryFn: ({ pageParam }) =>
       kyInstance
         .get(
-          "/api/posts/for-you",
+          `/api/posts/${endPoint}`,
           pageParam ? { searchParams: { cursor: pageParam } } : {},
         )
         .json<PagePost>(),
