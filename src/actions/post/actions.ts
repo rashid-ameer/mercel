@@ -3,13 +3,13 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { createPostSchema, deletePostSchema } from "@/lib/schemas";
-import { postDataInclude } from "@/lib/types";
+import { getPostDataInclude } from "@/lib/types";
 
 // create a post
 export async function createPost(input: unknown) {
   // checking if user if authorized
-  const session = await validateRequest();
-  if (!session.user) {
+  const { user } = await validateRequest();
+  if (!user) {
     throw new Error("Unauthorized");
   }
 
@@ -20,9 +20,9 @@ export async function createPost(input: unknown) {
   const post = await prisma.post.create({
     data: {
       content: content,
-      userId: session.user.id,
+      userId: user.id,
     },
-    include: postDataInclude,
+    include: getPostDataInclude(user.id),
   });
 
   return post;
@@ -60,7 +60,7 @@ export async function deletePost(id: unknown) {
     where: {
       id: postId,
     },
-    include: postDataInclude,
+    include: getPostDataInclude(user.id),
   });
 
   return deletedPost;

@@ -1,9 +1,8 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import { userDataSelect } from "@/lib/types";
 import Link from "next/link";
-import { Button } from "../ui/button";
-import UserAvatar from "../user-avatar";
+import { FollowButton, UserAvatar } from "@/components";
+import { getUserDataSelect } from "@/lib/types";
 
 async function WhoToFollow() {
   const { user } = await validateRequest();
@@ -11,17 +10,22 @@ async function WhoToFollow() {
   // user will already be redirected if it is not authorized
   if (!user) return null;
 
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
   const userToFollow = await prisma.user.findMany({
     where: {
       NOT: {
         id: user.id,
       },
+      followers: {
+        none: {
+          followerId: user.id,
+        },
+      },
     },
-    select: userDataSelect,
+    select: getUserDataSelect(user.id),
     take: 5,
   });
+
+  console.log(userToFollow);
 
   return (
     <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm">
@@ -46,7 +50,13 @@ async function WhoToFollow() {
               </div>
             </Link>
 
-            <Button className="rounded-full">Follow</Button>
+            <FollowButton
+              userId={user.id}
+              initialData={{
+                followers: user._count.followers,
+                isFollowedByUser: !!user.followers.length,
+              }}
+            />
           </div>
         ))}
       </div>

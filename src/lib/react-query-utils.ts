@@ -1,6 +1,7 @@
 import {
   InfiniteData,
   QueryFilters,
+  QueryKey,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -108,5 +109,40 @@ export const useFollowInfoQuery = (
       kyInstance.get(`/api/users/${userId}/followers`).json<FollowersInfo>(),
     initialData: initialData,
     staleTime: Infinity,
+  });
+};
+
+// follow/unfollow mutation
+export const useFollowMutation = (userId: string, isFollowing: boolean) => {
+  const queryClient = useQueryClient();
+  const queryKey: QueryKey = ["follower-info", userId];
+
+  return useMutation({
+    mutationFn: () =>
+      isFollowing
+        ? kyInstance.delete(`/api/users/${userId}/followers`)
+        : kyInstance.post(`/api/users/${userId}/followers`),
+    onMutate: async () => {
+      // cancel outgoing request
+      await queryClient.cancelQueries({ queryKey });
+      // get previous state
+      const previousState = queryClient.getQueryData<FollowersInfo>(queryKey);
+      // update cache
+      queryClient.setQueryData<FollowersInfo>(queryKey, () => {
+        if (previousState) {
+          return {
+            isFollowedByUser: !previousState.isFollowedByUser,
+            followers:
+              previousState.followers +
+              (previousState.isFollowedByUser ? -1 : 1),
+          };
+        }
+      });
+
+      return { previousState };
+    },
+    onError: (err, variables, context) => {
+      queryClient.setQueryData<FollowersInfo>(queryKey, context?.previousState);
+    },
   });
 };

@@ -12,10 +12,20 @@ export async function GET(req: NextRequest) {
       return Response.json({ error: "Unauthorized request." }, { status: 401 });
     }
 
+    // get the cursor
     const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
 
     // fetching posts
     const posts = await prisma.post.findMany({
+      where: {
+        user: {
+          followers: {
+            some: {
+              followerId: user.id,
+            },
+          },
+        },
+      },
       include: getPostDataInclude(user.id),
       take: POSTS_PER_PAGE + 1,
       cursor: cursor ? { id: cursor } : undefined,

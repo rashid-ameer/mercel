@@ -43,7 +43,7 @@ export async function GET(
       followers: user._count.followers,
     };
 
-    return Response.json({ data });
+    return Response.json(data);
   } catch (error) {
     console.error(error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
@@ -57,6 +57,7 @@ export async function POST(
 ) {
   try {
     const { user: loggedInUser } = await validateRequest();
+
     if (!loggedInUser) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }

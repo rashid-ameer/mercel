@@ -29,10 +29,10 @@ model User {
 
 model Follow {
   followerId String
-  follower   User   @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  follower   User   @relation("Following", fields: [followerId], references: [id], onDelete: Cascade)
 
   followingId String
-  following   User   @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  following   User   @relation("Follower", fields: [followingId], references: [id], onDelete: Cascade)
 
   @@unique([followerId, followingId])
   @@map("follows")
