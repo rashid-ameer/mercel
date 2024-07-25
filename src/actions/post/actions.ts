@@ -14,12 +14,14 @@ export async function createPost(input: unknown) {
   }
 
   // validate input
-  const { content } = createPostSchema.parse({ content: input });
-
+  const validationResult = createPostSchema.safeParse({ content: input });
+  if (!validationResult.success) {
+    throw new Error("Invalid input");
+  }
   // create post
   const post = await prisma.post.create({
     data: {
-      content: content,
+      content: validationResult.data.content,
       userId: user.id,
     },
     include: getPostDataInclude(user.id),

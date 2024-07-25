@@ -4,7 +4,11 @@ import Post from "./post";
 import { CircularLoader, PostsLoadingSkeleton } from "@/components/loaders";
 import { usePostsInfiniteQuery } from "@/lib/react-query-utils";
 
-function PostFeed() {
+interface PostFeedProps {
+  userId: string;
+}
+
+function UserFeed({ userId }: PostFeedProps) {
   const {
     data,
     fetchNextPage,
@@ -12,7 +16,11 @@ function PostFeed() {
     hasNextPage,
     status,
     error,
-  } = usePostsInfiniteQuery("posts/for-you", ["post-feed", "for-you"]);
+  } = usePostsInfiniteQuery(`users/${userId}/posts`, [
+    "post-feed",
+    "user-posts",
+    userId,
+  ]);
 
   const handleBottomReached = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -33,7 +41,9 @@ function PostFeed() {
           <p className="text-center text-destructive">{error.message}</p>
         )}
         {status === "success" && posts.length === 0 && !hasNextPage && (
-          <p className="text-center text-muted-foreground">No posts to show</p>
+          <p className="text-center text-muted-foreground">
+            This user has not posted yet.
+          </p>
         )}
 
         {posts.map((post) => (
@@ -45,4 +55,4 @@ function PostFeed() {
     </>
   );
 }
-export default PostFeed;
+export default UserFeed;

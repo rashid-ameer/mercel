@@ -18,7 +18,6 @@ function Home() {
           <TabsContent value="following">
             <FollowingFeed />
           </TabsContent>
-          you
         </Tabs>
       </div>
 

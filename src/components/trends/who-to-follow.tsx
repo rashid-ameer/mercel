@@ -25,8 +25,6 @@ async function WhoToFollow() {
     take: 5,
   });
 
-  console.log(userToFollow);
-
   return (
     <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm">
       <h2 className="text-lg font-semibold">Who To Follow</h2>

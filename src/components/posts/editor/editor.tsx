@@ -8,6 +8,7 @@ import useSession from "@/hooks/useSessionProvider";
 import "./styles.css";
 import { useCreatePostMutation } from "@/lib/react-query-utils";
 import { useToast } from "@/components/ui/use-toast";
+import { createPostSchema } from "@/lib/schemas";
 
 function PostEditor() {
   const { toast } = useToast();
@@ -28,10 +29,15 @@ function PostEditor() {
   });
 
   // Get the editor content
-  const input = editor?.getText({ blockSeparator: "\n" }) ?? "";
+  const input = editor?.getText({ blockSeparator: "\n" }).trim() ?? "";
 
   // submit handler
   const onSubmit = async () => {
+    const validationResult = createPostSchema.safeParse({ content: input });
+    if (!validationResult.success) {
+      return;
+    }
+
     postCreateMutation.mutate(input, {
       onSuccess: () => {
         toast({ description: "Post created successfully." });
@@ -59,7 +65,7 @@ function PostEditor() {
       <Button
         onClick={onSubmit}
         className="ml-auto flex min-w-20 rounded-full"
-        disabled={postCreateMutation.isPending}
+        disabled={postCreateMutation.isPending || !input}
       >
         Post
       </Button>

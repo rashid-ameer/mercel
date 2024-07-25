@@ -1,6 +1,10 @@
 import { unstable_cache } from "next/cache";
 import prisma from "./prisma";
+import { cache } from "react";
+import { notFound } from "next/navigation";
+import { getUserDataSelect } from "@/lib/types";
 
+// get the top 5 trending topics
 export const getTrendingTopics = unstable_cache(
   async () => {
     const result = await prisma.$queryRaw<{ hashtag: string; count: bigint }[]>`
@@ -18,4 +22,25 @@ export const getTrendingTopics = unstable_cache(
   },
   ["trending_topics"],
   { revalidate: 3 * 60 * 60 },
+);
+
+// get the user details
+export const getUserDetails = cache(
+  async (username: string, userId: string) => {
+    const user = await prisma.user.findFirst({
+      where: {
+        username: {
+          equals: username,
+          mode: "insensitive",
+        },
+      },
+      select: getUserDataSelect(userId),
+    });
+
+    if (!user) {
+      notFound();
+    }
+
+    return user;
+  },
 );

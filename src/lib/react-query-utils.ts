@@ -10,15 +10,19 @@ import {
 import kyInstance from "./ky";
 import { FollowersInfo, PagePost } from "./types";
 import { createPost, deletePost } from "@/actions/post/actions";
+import useSession from "@/hooks/useSessionProvider";
 
 // loading infinite posts request
-export const usePostsInfiniteQuery = (endPoint: string) => {
+export const usePostsInfiniteQuery = (
+  endPoint: string,
+  queryKeys: string[],
+) => {
   return useInfiniteQuery({
-    queryKey: ["post-feed", "for-you"],
+    queryKey: queryKeys,
     queryFn: ({ pageParam }) =>
       kyInstance
         .get(
-          `/api/posts/${endPoint}`,
+          `/api/${endPoint}`,
           pageParam ? { searchParams: { cursor: pageParam } } : {},
         )
         .json<PagePost>(),
@@ -30,12 +34,19 @@ export const usePostsInfiniteQuery = (endPoint: string) => {
 // uploading a post
 export const useCreatePostMutation = () => {
   const queryClient = useQueryClient();
+  const { user } = useSession();
 
   return useMutation({
     mutationFn: createPost,
     onSuccess: async (newPost) => {
       // query filters
-      const queryFilter: QueryFilters = { queryKey: ["post-feed", "for-you"] };
+      const queryFilter = {
+        queryKey: ["post-feed"],
+        predicate: (query) =>
+          query.queryKey.includes("for-you") ||
+          (query.queryKey.includes("user-posts") &&
+            query.queryKey.includes(user.id)),
+      } satisfies QueryFilters;
       // cancel any ongoing queries
       await queryClient.cancelQueries(queryFilter);
       // updating cache
@@ -62,7 +73,7 @@ export const useCreatePostMutation = () => {
       // invalidate queries if data is null
       queryClient.invalidateQueries({
         queryKey: queryFilter.queryKey,
-        predicate: (query) => !query.state.data,
+        predicate: (query) => queryFilter.predicate(query) && !query.state.data,
       });
     },
   });

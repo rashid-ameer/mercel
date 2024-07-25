@@ -22,7 +22,7 @@ function Post({ post }: PostProps) {
 
           <div className="flex flex-col">
             <Link
-              href={`/posts/${post.user.username}`}
+              href={`/user/${post.user.username}`}
               className="font-medium hover:underline"
             >
               {post.user.displayName}
