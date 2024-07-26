@@ -1,5 +1,6 @@
 import {
   FollowButton,
+  Linkify,
   UserAvatar,
   UserFollowers,
   UserStats,
@@ -55,7 +56,9 @@ function UserProfile({ user, loggedInUserId }: UserProfileProps) {
       {user.bio && (
         <>
           <hr />
-          <p className="text-muted-foreground">{user.bio}</p>
+          <Linkify>
+            <p className="text-muted-foreground">{user.bio}</p>
+          </Linkify>
         </>
       )}
     </div>

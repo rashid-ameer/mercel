@@ -4,3 +4,5 @@ export { default as UserAvatar } from "@/components/user-avatar";
 export { default as UserProfile } from "@/components/user-profile";
 export { default as UserStats } from "@/components/user-stats";
 export { default as UserFollowers } from "@/components/user-followers";
+export { default as Linkify } from "@/components/linkify";
+export { default as UserTooltip } from "@/components/user-tooltip";

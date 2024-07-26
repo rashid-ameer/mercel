@@ -1,7 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { FollowButton, UserAvatar } from "@/components";
+import { FollowButton, UserAvatar, UserTooltip } from "@/components";
 import { getUserDataSelect } from "@/lib/types";
 
 async function WhoToFollow() {
@@ -32,21 +32,23 @@ async function WhoToFollow() {
       <div className="space-y-2">
         {userToFollow.map((user) => (
           <div key={user.id} className="flex items-center justify-between">
-            <Link
-              href={`/user/${user.username}`}
-              className="flex items-center gap-3"
-            >
-              <UserAvatar avatarUrl={user.avatarUrl} />
+            <UserTooltip user={user}>
+              <Link
+                href={`/user/${user.username}`}
+                className="flex items-center gap-3"
+              >
+                <UserAvatar avatarUrl={user.avatarUrl} />
 
-              <div>
-                <h3 className="line-clamp-1 break-all font-semibold hover:underline">
-                  {user.displayName}
-                </h3>
-                <p className="line-clamp-1 break-all text-muted-foreground">
-                  @{user.username}
-                </p>
-              </div>
-            </Link>
+                <div>
+                  <h3 className="line-clamp-1 break-all font-semibold hover:underline">
+                    {user.displayName}
+                  </h3>
+                  <p className="line-clamp-1 break-all text-muted-foreground">
+                    @{user.username}
+                  </p>
+                </div>
+              </Link>
+            </UserTooltip>
 
             <FollowButton
               userId={user.id}

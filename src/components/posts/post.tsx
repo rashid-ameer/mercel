@@ -4,6 +4,7 @@ import UserAvatar from "../user-avatar";
 import { getRelativeTime } from "@/lib/utils";
 import { PostMoreButton } from "@/components/posts";
 import useSession from "@/hooks/useSessionProvider";
+import { Linkify, UserTooltip } from "@/components";
 
 interface PostProps {
   post: TPost;
@@ -16,9 +17,11 @@ function Post({ post }: PostProps) {
     <article className="group/post space-y-3 rounded-2xl bg-card p-5 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <div className="flex gap-3">
-          <Link href={`/posts/${post.user.username}`}>
-            <UserAvatar avatarUrl={post.user.avatarUrl} />
-          </Link>
+          <UserTooltip user={post.user}>
+            <Link href={`/posts/${post.user.username}`}>
+              <UserAvatar avatarUrl={post.user.avatarUrl} />
+            </Link>
+          </UserTooltip>
 
           <div className="flex flex-col">
             <Link
@@ -44,7 +47,9 @@ function Post({ post }: PostProps) {
         )}
       </div>
 
-      <div className="whitespace-pre-wrap break-words">{post.content}</div>
+      <Linkify>
+        <div className="whitespace-pre-wrap break-words">{post.content}</div>
+      </Linkify>
     </article>
   );
 }

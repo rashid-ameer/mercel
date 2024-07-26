@@ -15,7 +15,7 @@ import {
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import UserAvatar from "./user-avatar";
 import Link from "next/link";
-import { LogOutIcon, Monitor, Moon, Sun, UserIcon } from "lucide-react";
+import { LogOut, LogOutIcon, Monitor, Moon, Sun, UserIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logout } from "@/app/(auth)/action";
 import useSession from "@/hooks/useSessionProvider";
@@ -96,7 +96,8 @@ function UserButton({ className }: UserButtonProps) {
 
         <DropdownMenuItem asChild>
           <button className="w-full cursor-pointer" onClick={handleLogout}>
-            Logout
+            <LogOutIcon className="mr-2 size-4" />
+            <span>Logout</span>
           </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
