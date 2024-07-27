@@ -8,9 +8,10 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import kyInstance from "./ky";
-import { FollowersInfo, PagePost } from "./types";
+import { FollowersInfo, PagePost, UserData } from "@/lib/types";
 import { createPost, deletePost } from "@/actions/post/actions";
 import useSession from "@/hooks/useSessionProvider";
+import { HTTPError } from "ky";
 
 // loading infinite posts request
 export const usePostsInfiniteQuery = (
@@ -154,6 +155,23 @@ export const useFollowMutation = (userId: string, isFollowing: boolean) => {
     },
     onError: (err, variables, context) => {
       queryClient.setQueryData<FollowersInfo>(queryKey, context?.previousState);
+    },
+  });
+};
+
+// get user data query
+export const useUserDataQuery = (username: string) => {
+  return useQuery({
+    queryKey: ["user-data", username],
+    queryFn: () =>
+      kyInstance.get(`/api/users/username/${username}`).json<UserData>(),
+    staleTime: Infinity,
+    retry(failureCount, error) {
+      if (error instanceof HTTPError && error.response.status === 404) {
+        return false;
+      }
+
+      return failureCount < 3;
     },
   });
 };

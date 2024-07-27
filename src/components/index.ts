@@ -6,3 +6,4 @@ export { default as UserStats } from "@/components/user-stats";
 export { default as UserFollowers } from "@/components/user-followers";
 export { default as Linkify } from "@/components/linkify";
 export { default as UserTooltip } from "@/components/user-tooltip";
+export { default as UserLinkWithTooltip } from "@/components/user-link-with-tooltip";
