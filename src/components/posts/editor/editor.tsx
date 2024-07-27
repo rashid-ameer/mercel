@@ -55,7 +55,7 @@ function PostEditor() {
   return (
     <div className="flex flex-col gap-5 rounded-2xl bg-card p-5 shadow-sm">
       <div className="flex items-start gap-5">
-        <UserAvatar avatarUrl={user.avatarUrl} />
+        <UserAvatar avatarUrl={user.avatarUrl} priority={true} />
         <EditorContent
           editor={editor}
           className="max-h-[20rem] min-h-[7rem] flex-1 overflow-y-auto rounded-xl bg-muted px-5 py-3"

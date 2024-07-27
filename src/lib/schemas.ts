@@ -28,3 +28,9 @@ export const createPostSchema = z.object({
 
 // delete post schema
 export const deletePostSchema = requiredString("Post ID is required");
+
+// update user
+export const updateUserProfileSchema = z.object({
+  displayName: requiredString("Display name is required"),
+  bio: z.string().max(400, "Bio must be 400 characters or less"),
+});

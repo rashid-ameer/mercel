@@ -8,10 +8,17 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import kyInstance from "./ky";
-import { FollowersInfo, PagePost, UserData } from "@/lib/types";
+import {
+  FollowersInfo,
+  PagePost,
+  UpdateUserProfile,
+  UserData,
+} from "@/lib/types";
 import { createPost, deletePost } from "@/actions/post/actions";
 import useSession from "@/hooks/useSessionProvider";
 import { HTTPError } from "ky";
+import { updateUserProfile } from "@/actions/user/actions";
+import { useUploadThing } from "@/lib/uploadthing";
 
 // loading infinite posts request
 export const usePostsInfiniteQuery = (
@@ -172,6 +179,63 @@ export const useUserDataQuery = (username: string) => {
       }
 
       return failureCount < 3;
+    },
+  });
+};
+
+// update profile mutation
+export const useUserUpdateProfileMutation = () => {
+  const queryClient = useQueryClient();
+
+  const { startUpload: startAvatarUpload } = useUploadThing("avatar");
+
+  return useMutation({
+    mutationFn: ({
+      profileData,
+      avatar,
+    }: {
+      profileData: UpdateUserProfile;
+      avatar?: File;
+    }) => {
+      return Promise.all([
+        updateUserProfile(profileData),
+        avatar && startAvatarUpload([avatar]),
+      ]);
+    },
+    onSuccess: async ([updatedUser, uploadResult]) => {
+      const newAvatarUrl = uploadResult?.[0].serverData.avatarUrl;
+
+      const queryFilter: QueryFilters = { queryKey: ["post-feed"] };
+
+      await queryClient.cancelQueries(queryFilter);
+
+      queryClient.setQueriesData<InfiniteData<PagePost, string | null>>(
+        queryFilter,
+        (oldData) => {
+          if (!oldData) return;
+
+          return {
+            pageParams: oldData.pageParams,
+            pages: oldData.pages.map((page) => {
+              return {
+                nextCursor: page.nextCursor,
+                posts: page.posts.map((post) => {
+                  if (post.user.id === updatedUser.id) {
+                    return {
+                      ...post,
+                      user: {
+                        ...updatedUser,
+                        avatarUrl: newAvatarUrl || updatedUser.avatarUrl,
+                      },
+                    };
+                  }
+                  return post;
+                }),
+              };
+            }),
+          };
+        },
+      );
     },
   });
 };

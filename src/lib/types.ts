@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { loginSchema, signupSchema } from "./schemas";
+import { loginSchema, signupSchema, updateUserProfileSchema } from "./schemas";
 import { Prisma } from "@prisma/client";
 
 export type Signup = z.infer<typeof signupSchema>;
@@ -36,20 +36,27 @@ export const getPostDataInclude = (loggedInUserId: string) =>
     },
   }) satisfies Prisma.PostInclude;
 
+// Post type
 export type TPost = Prisma.PostGetPayload<{
   include: ReturnType<typeof getPostDataInclude>;
 }>;
 
+// User data type
 export type UserData = Prisma.UserGetPayload<{
   select: ReturnType<typeof getUserDataSelect>;
 }>;
 
+// Page Post
 export type PagePost = {
   posts: TPost[];
   nextCursor: string | null;
 };
 
+// followers info
 export type FollowersInfo = {
   isFollowedByUser: boolean;
   followers: number;
 };
+
+// update user profile
+export type UpdateUserProfile = z.infer<typeof updateUserProfileSchema>;
