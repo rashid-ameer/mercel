@@ -1,10 +1,11 @@
-import { type TPost } from "@/lib/types";
+import { Media, type TPost } from "@/lib/types";
 import Link from "next/link";
 import UserAvatar from "../user-avatar";
-import { getRelativeTime } from "@/lib/utils";
+import { cn, getRelativeTime } from "@/lib/utils";
 import { PostMoreButton } from "@/components/posts";
 import useSession from "@/hooks/useSessionProvider";
 import { Linkify, UserTooltip } from "@/components";
+import Image from "next/image";
 
 interface PostProps {
   post: TPost;
@@ -50,7 +51,58 @@ function Post({ post }: PostProps) {
       <Linkify>
         <div className="whitespace-pre-wrap break-words">{post.content}</div>
       </Linkify>
+
+      {!!post.attachments.length && (
+        <MediaPreviews attachments={post.attachments} />
+      )}
     </article>
   );
 }
 export default Post;
+
+interface MediaPreviewsProps {
+  attachments: Media[];
+}
+
+function MediaPreviews({ attachments }: MediaPreviewsProps) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col items-start gap-3",
+        attachments.length > 1 && "sm:grid sm:grid-cols-2",
+      )}
+    >
+      {attachments.map((attachment) => (
+        <MediaPreview key={attachment.id} attachment={attachment} />
+      ))}
+    </div>
+  );
+}
+
+interface MediaPreviewProps {
+  attachment: Media;
+}
+
+function MediaPreview({ attachment: { id, url, type } }: MediaPreviewProps) {
+  if (type === "IMAGE") {
+    return (
+      <Image
+        src={url}
+        alt=""
+        width={500}
+        height={500}
+        className="max-h-[30rem] w-auto rounded-2xl object-cover"
+      />
+    );
+  }
+
+  return (
+    <div>
+      <video
+        src={url}
+        controls
+        className="max-h-[30rem] w-auto rounded-2xl object-cover"
+      />
+    </div>
+  );
+}

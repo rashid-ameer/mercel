@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { loginSchema, signupSchema, updateUserProfileSchema } from "./schemas";
 import { Prisma } from "@prisma/client";
+export type { Media } from "@prisma/client";
 
 export type Signup = z.infer<typeof signupSchema>;
 export type Login = z.infer<typeof loginSchema>;
@@ -34,6 +35,7 @@ export const getPostDataInclude = (loggedInUserId: string) =>
     user: {
       select: getUserDataSelect(loggedInUserId),
     },
+    attachments: true,
   }) satisfies Prisma.PostInclude;
 
 // Post type
@@ -60,3 +62,10 @@ export type FollowersInfo = {
 
 // update user profile
 export type UpdateUserProfile = z.infer<typeof updateUserProfileSchema>;
+
+// attachment
+export interface Attachment {
+  file: File;
+  mediaId?: string;
+  isUploading: boolean;
+}

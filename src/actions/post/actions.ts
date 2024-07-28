@@ -14,7 +14,7 @@ export async function createPost(input: unknown) {
   }
 
   // validate input
-  const validationResult = createPostSchema.safeParse({ content: input });
+  const validationResult = createPostSchema.safeParse(input);
   if (!validationResult.success) {
     throw new Error("Invalid input");
   }
@@ -23,7 +23,11 @@ export async function createPost(input: unknown) {
     data: {
       content: validationResult.data.content,
       userId: user.id,
+      attachments: {
+        connect: validationResult.data.mediaIds.map((id: string) => ({ id })),
+      },
     },
+
     include: getPostDataInclude(user.id),
   });
 
