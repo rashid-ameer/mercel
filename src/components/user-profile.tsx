@@ -1,4 +1,5 @@
 import {
+  EditProfileButton,
   FollowButton,
   Linkify,
   UserAvatar,
@@ -7,7 +8,6 @@ import {
 } from "@/components";
 import { FollowersInfo, UserData } from "@/lib/types";
 import { formatDate } from "date-fns";
-import { Button } from "./ui/button";
 
 interface UserProfileProps {
   user: UserData;
@@ -26,6 +26,7 @@ function UserProfile({ user, loggedInUserId }: UserProfileProps) {
         className="mx-auto size-full max-h-[250px] max-w-[250px]"
         size={250}
         priority={true}
+        avatarUrl={user.avatarUrl}
       />
 
       <div className="flex flex-wrap justify-between sm:flex-nowrap">
@@ -45,9 +46,7 @@ function UserProfile({ user, loggedInUserId }: UserProfileProps) {
           </div>
         </div>
         {loggedInUserId === user.id ? (
-          <Button className="rounded-full" variant="secondary">
-            Edit
-          </Button>
+          <EditProfileButton user={user} />
         ) : (
           <FollowButton initialData={followerInfo} userId={user.id} />
         )}

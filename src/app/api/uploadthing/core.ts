@@ -1,7 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { createUploadthing, FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
+import { UploadThingError, UTApi } from "uploadthing/server";
 
 const f = createUploadthing();
 
@@ -20,6 +20,16 @@ export const fileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // this code runs on a server after the file is uploaded
+
+      // delete old avatar from upload thing
+      const oldAvatarUrl = metadata.user.avatarUrl;
+      if (oldAvatarUrl) {
+        const key = oldAvatarUrl?.split(
+          `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`,
+        )[1];
+        await new UTApi().deleteFiles(key);
+      }
+
       // making new url for security reasons
       const newAvatarUrl = file.url.replace(
         "/f/",
