@@ -17,6 +17,7 @@ import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CircularLoader } from "@/components/loaders";
 import { useDropzone } from "@uploadthing/react/hooks";
+import { ClipboardEvent } from "react";
 
 function PostEditor() {
   const { toast } = useToast();
@@ -89,6 +90,14 @@ function PostEditor() {
     editor?.commands.clearContent();
   };
 
+  // paste function
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    const files = Array.from(e.clipboardData.items)
+      .filter((item) => item.kind === "file")
+      .map((item) => item.getAsFile()) as File[];
+    startUpload(files);
+  };
+
   return (
     <div className="flex flex-col gap-5 rounded-2xl bg-card p-5 shadow-sm">
       <div className="flex items-start gap-5">
@@ -100,6 +109,7 @@ function PostEditor() {
               "max-h-[20rem] min-h-[7rem] flex-1 overflow-y-auto rounded-xl bg-muted px-5 py-3",
               { "outline-dashed": isDragActive },
             )}
+            onPaste={handlePaste}
           />
           <input {...getInputProps()} />
         </div>
