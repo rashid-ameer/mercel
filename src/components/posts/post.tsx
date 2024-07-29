@@ -101,7 +101,7 @@ function MediaPreview({ attachment: { id, url, type } }: MediaPreviewProps) {
       <video
         src={url}
         controls
-        className="max-h-[30rem] w-auto rounded-2xl object-cover"
+        className="max-h-[30rem] rounded-2xl object-cover"
       />
     </div>
   );
