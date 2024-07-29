@@ -10,6 +10,7 @@ import {
 import kyInstance from "./ky";
 import {
   FollowersInfo,
+  LikesInfo,
   PagePost,
   UpdateUserProfile,
   UserData,
@@ -237,6 +238,60 @@ export const useUserUpdateProfileMutation = () => {
           };
         },
       );
+    },
+  });
+};
+
+// like query
+export const useLikesQuery = (
+  postId: string,
+  initialData: LikesInfo,
+  queryKey: QueryKey,
+) => {
+  return useQuery({
+    queryKey: queryKey,
+    queryFn: () =>
+      kyInstance.get(`/api/posts/${postId}/likes`).json<LikesInfo>(),
+    initialData: initialData,
+    staleTime: Infinity,
+  });
+};
+
+// like/unlike mutation
+export const useLikesMutation = (queryKey: QueryKey) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      isLikedByUser,
+      postId,
+    }: {
+      isLikedByUser: boolean;
+      postId: string;
+    }) =>
+      isLikedByUser
+        ? kyInstance.delete(`/api/posts/${postId}/likes`)
+        : kyInstance.post(`/api/posts/${postId}/likes`),
+    onMutate: async () => {
+      // cancel outgoing request
+      await queryClient.cancelQueries({ queryKey });
+      // get previous likes data
+      const previousState = queryClient.getQueryData<LikesInfo>(queryKey);
+
+      // update cache
+      queryClient.setQueryData<LikesInfo>(queryKey, () => {
+        if (previousState) {
+          return {
+            isLikedByUser: !previousState.isLikedByUser,
+            likes: previousState.likes + (previousState.isLikedByUser ? -1 : 1),
+          };
+        }
+      });
+
+      return { previousState };
+    },
+    onError: (err, variables, context) => {
+      queryClient.setQueryData<LikesInfo>(queryKey, context?.previousState);
     },
   });
 };

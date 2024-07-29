@@ -7,6 +7,7 @@ import { PostMoreButton } from "@/components/posts";
 import useSession from "@/hooks/useSessionProvider";
 import { Linkify, UserTooltip } from "@/components";
 import Image from "next/image";
+import LikeButton from "./like-button";
 
 interface PostProps {
   post: TPost;
@@ -56,6 +57,15 @@ function Post({ post }: PostProps) {
       {!!post.attachments.length && (
         <MediaPreviews attachments={post.attachments} />
       )}
+
+      <hr className="text-muted-foreground" />
+      <LikeButton
+        initialData={{
+          isLikedByUser: !!post.likes.length,
+          likes: post._count.likes,
+        }}
+        postId={post.id}
+      />
     </article>
   );
 }
