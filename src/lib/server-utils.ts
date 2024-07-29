@@ -2,7 +2,7 @@ import { unstable_cache } from "next/cache";
 import prisma from "./prisma";
 import { cache } from "react";
 import { notFound } from "next/navigation";
-import { getUserDataSelect } from "@/lib/types";
+import { getPostDataInclude, getUserDataSelect } from "@/lib/types";
 
 // get the top 5 trending topics
 export const getTrendingTopics = unstable_cache(
@@ -44,3 +44,19 @@ export const getUserDetails = cache(
     return user;
   },
 );
+
+// get the post
+export const getPost = cache(async (postId: string, loggedInUserId: string) => {
+  const post = await prisma.post.findFirst({
+    where: {
+      id: postId,
+    },
+    include: getPostDataInclude(loggedInUserId),
+  });
+
+  if (!post) {
+    notFound();
+  }
+
+  return post;
+});

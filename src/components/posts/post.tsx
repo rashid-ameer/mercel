@@ -1,3 +1,4 @@
+"use client";
 import { Media, type TPost } from "@/lib/types";
 import Link from "next/link";
 import UserAvatar from "../user-avatar";
@@ -97,11 +98,11 @@ function MediaPreview({ attachment: { id, url, type } }: MediaPreviewProps) {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <video
         src={url}
         controls
-        className="max-h-[30rem] rounded-2xl object-cover"
+        className="max-h-[30rem] w-full rounded-2xl object-cover"
       />
     </div>
   );

@@ -113,6 +113,7 @@ export const useDeletePostMutation = () => {
           };
         },
       );
+      // return deletedPost;
     },
   });
 };

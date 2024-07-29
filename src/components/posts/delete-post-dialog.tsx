@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +11,7 @@ import { useDeletePostMutation } from "@/lib/react-query-utils";
 import { LoadingButton } from "@/components/auth";
 import { Button } from "@/components/ui/button";
 import { useToast } from "../ui/use-toast";
+import { useRouter } from "next/navigation";
 
 interface DeletePostDialogProps {
   open: boolean;
@@ -18,6 +20,7 @@ interface DeletePostDialogProps {
 }
 
 function DeletePostDialog({ open, onClose, postId }: DeletePostDialogProps) {
+  const router = useRouter();
   const deleteMutation = useDeletePostMutation();
   const { toast } = useToast();
 
@@ -31,9 +34,10 @@ function DeletePostDialog({ open, onClose, postId }: DeletePostDialogProps) {
   // handle delete
   const handleDelete = () => {
     deleteMutation.mutate(postId, {
-      onSuccess: () => {
+      onSuccess: (deletedPost) => {
         toast({ description: "Post deleted successfully" });
         onClose();
+        router.push(`/users/${deletedPost.user.username}`);
       },
       onError: (error) => {
         toast({ variant: "destructive", description: "Failed to delete post" });
