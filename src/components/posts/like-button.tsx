@@ -29,7 +29,7 @@ function LikeButton({ initialData, postId }: LikeButtonProps) {
         onError: () => {
           toast({
             variant: "destructive",
-            description: "Couldn't like the post. Try again later.",
+            description: `Couldn't ${data.isLikedByUser ? "unlike" : "like"} the post. Try again later.`,
           });
         },
       },

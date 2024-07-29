@@ -10,20 +10,21 @@ datasource db {
 
 // database schema
 model User {
-  id           String    @id
-  username     String    @unique
+  id           String     @id
+  username     String     @unique
   displayName  String
-  email        String?   @unique
+  email        String?    @unique
   passwordHash String?
-  googleId     String?   @unique
+  googleId     String?    @unique
   avatarUrl    String?
   bio          String?
   sessions     Session[]
   posts        Post[]
-  createdAt    DateTime  @default(now())
-  followers    Follow[]  @relation("Follower")
-  following    Follow[]  @relation("Following")
+  createdAt    DateTime   @default(now())
+  followers    Follow[]   @relation("Follower")
+  following    Follow[]   @relation("Following")
   likes        Like[]
+  bookmarks    Bookmark[]
 
   @@map("users")
 }
@@ -50,12 +51,13 @@ model Session {
 }
 
 model Post {
-  id          String  @id @default(cuid())
+  id          String     @id @default(cuid())
   content     String
   userId      String
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   attachments Media[]
   likes       Like[]
+  bookmarks   Bookmark[]
 
   createdAt DateTime @default(now())
 
@@ -87,4 +89,17 @@ model Like {
 
   @@unique([userId, postId])
   @@map("likes")
+}
+
+model Bookmark {
+  id     String @id @default(cuid())
+  userId String
+  postId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@map("bookmarks")
 }

@@ -8,6 +8,7 @@ import useSession from "@/hooks/useSessionProvider";
 import { Linkify, UserTooltip } from "@/components";
 import Image from "next/image";
 import LikeButton from "./like-button";
+import BookmarkButton from "./bookmark-button";
 
 interface PostProps {
   post: TPost;
@@ -59,13 +60,23 @@ function Post({ post }: PostProps) {
       )}
 
       <hr className="text-muted-foreground" />
-      <LikeButton
-        initialData={{
-          isLikedByUser: !!post.likes.length,
-          likes: post._count.likes,
-        }}
-        postId={post.id}
-      />
+      <div className="flex items-center justify-between gap-5">
+        <LikeButton
+          initialData={{
+            isLikedByUser: !!post.likes.length,
+            likes: post._count.likes,
+          }}
+          postId={post.id}
+        />
+        <BookmarkButton
+          postId={post.id}
+          initialData={{
+            isBookmarkedByUser: post.bookmarks.some(
+              (bookmark) => bookmark.userId === user.id,
+            ),
+          }}
+        />
+      </div>
     </article>
   );
 }

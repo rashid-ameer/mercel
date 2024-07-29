@@ -43,6 +43,12 @@ export const getPostDataInclude = (loggedInUserId: string) =>
         userId: true,
       },
     },
+    bookmarks: {
+      where: { userId: loggedInUserId },
+      select: {
+        userId: true,
+      },
+    },
     _count: {
       select: {
         likes: true,
@@ -86,4 +92,9 @@ export interface Attachment {
   file: File;
   mediaId?: string;
   isUploading: boolean;
+}
+
+// bookmark
+export interface BookmarkInfo {
+  isBookmarkedByUser: boolean;
 }

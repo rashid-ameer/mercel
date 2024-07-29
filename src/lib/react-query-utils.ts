@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 import kyInstance from "./ky";
 import {
+  BookmarkInfo,
   FollowersInfo,
   LikesInfo,
   PagePost,
@@ -292,6 +293,58 @@ export const useLikesMutation = (queryKey: QueryKey) => {
     },
     onError: (err, variables, context) => {
       queryClient.setQueryData<LikesInfo>(queryKey, context?.previousState);
+    },
+  });
+};
+
+// bookmark query
+export const useBookmarkQuery = (
+  postId: string,
+  initialData: BookmarkInfo,
+  queryKey: QueryKey,
+) => {
+  return useQuery({
+    queryKey: queryKey,
+    queryFn: () =>
+      kyInstance.get(`/api/posts/${postId}/bookmarks`).json<BookmarkInfo>(),
+    initialData: initialData,
+    staleTime: Infinity,
+  });
+};
+
+// bookmark/unbookmark mutation
+export const useBookmarkMutation = (queryKey: QueryKey) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      isBookmarkedByUser,
+      postId,
+    }: {
+      isBookmarkedByUser: boolean;
+      postId: string;
+    }) =>
+      isBookmarkedByUser
+        ? kyInstance.delete(`/api/posts/${postId}/bookmarks`)
+        : kyInstance.post(`/api/posts/${postId}/bookmarks`),
+    onMutate: async () => {
+      // cancel outgoing request
+      await queryClient.cancelQueries({ queryKey });
+      // get previous bookmark data
+      const previousState = queryClient.getQueryData<BookmarkInfo>(queryKey);
+      // update cache
+      queryClient.setQueryData<BookmarkInfo>(queryKey, () => {
+        if (previousState) {
+          return {
+            isBookmarkedByUser: !previousState.isBookmarkedByUser,
+          };
+        }
+      });
+
+      return { previousState };
+    },
+    onError(err, variables, context) {
+      queryClient.setQueryData<BookmarkInfo>(queryKey, context?.previousState);
     },
   });
 };
