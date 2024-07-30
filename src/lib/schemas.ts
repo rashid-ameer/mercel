@@ -35,3 +35,8 @@ export const updateUserProfileSchema = z.object({
   displayName: requiredString("Display name is required"),
   bio: z.string().max(400, "Bio must be 400 characters or less"),
 });
+
+// comment schema
+export const createCommentSchema = z.object({
+  content: requiredString("Comment content is required"),
+});

@@ -8,9 +8,14 @@ import { cn } from "@/lib/utils";
 interface BookmarkButtonProps {
   initialData: BookmarkInfo;
   postId: string;
+  className?: string;
 }
 
-function BookmarkButton({ initialData, postId }: BookmarkButtonProps) {
+function BookmarkButton({
+  initialData,
+  postId,
+  className,
+}: BookmarkButtonProps) {
   const { toast } = useToast();
   const queryKey: QueryKey = ["bookmarks-info", postId];
 
@@ -41,7 +46,7 @@ function BookmarkButton({ initialData, postId }: BookmarkButtonProps) {
   };
 
   return (
-    <button className="flex items-center gap-2">
+    <button className={cn("flex items-center gap-2", className)}>
       <Bookmark
         onClick={handleBookmark}
         className={cn("size-5", {

@@ -54,7 +54,7 @@ function LinkifyUsername({ children, className }: LinkPropsExtended) {
 function LinkfiyHashtag({ children, className }: LinkPropsExtended) {
   return (
     <LinkIt
-      regex={/(#[a-zA-Z0-9]+)/}
+      regex={/(#[a-zA-Z0-9.]+)/}
       component={(match, key) => (
         <Link
           href={`/hashtag/${match.slice(1)}`}

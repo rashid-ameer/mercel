@@ -9,6 +9,9 @@ import { Linkify, UserTooltip } from "@/components";
 import Image from "next/image";
 import LikeButton from "./like-button";
 import BookmarkButton from "./bookmark-button";
+import { useState } from "react";
+import CommentButton from "./comment-button";
+import Comments from "./comments";
 
 interface PostProps {
   post: TPost;
@@ -16,6 +19,8 @@ interface PostProps {
 
 function Post({ post }: PostProps) {
   const { user } = useSession();
+  // comments state
+  const [showComments, setShowComments] = useState(false);
 
   return (
     <article className="group/post space-y-3 rounded-2xl bg-card p-5 shadow-sm">
@@ -60,7 +65,7 @@ function Post({ post }: PostProps) {
       )}
 
       <hr className="text-muted-foreground" />
-      <div className="flex items-center justify-between gap-5">
+      <div className="flex items-center gap-5">
         <LikeButton
           initialData={{
             isLikedByUser: !!post.likes.length,
@@ -68,7 +73,14 @@ function Post({ post }: PostProps) {
           }}
           postId={post.id}
         />
+
+        <CommentButton
+          post={post}
+          onClick={() => setShowComments(!showComments)}
+        />
+
         <BookmarkButton
+          className="ml-auto"
           postId={post.id}
           initialData={{
             isBookmarkedByUser: post.bookmarks.some(
@@ -77,6 +89,8 @@ function Post({ post }: PostProps) {
           }}
         />
       </div>
+
+      {showComments && <Comments post={post} />}
     </article>
   );
 }

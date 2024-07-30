@@ -10,6 +10,8 @@ import {
 import kyInstance from "./ky";
 import {
   BookmarkInfo,
+  CommentData,
+  CommentPage,
   FollowersInfo,
   LikesInfo,
   PagePost,
@@ -21,6 +23,7 @@ import useSession from "@/hooks/useSessionProvider";
 import { HTTPError } from "ky";
 import { updateUserProfile } from "@/actions/user/actions";
 import { useUploadThing } from "@/lib/uploadthing";
+import { createComment, deleteComment } from "@/actions/comments/action";
 
 // loading infinite posts request
 export const usePostsInfiniteQuery = (
@@ -345,6 +348,104 @@ export const useBookmarkMutation = (queryKey: QueryKey) => {
     },
     onError(err, variables, context) {
       queryClient.setQueryData<BookmarkInfo>(queryKey, context?.previousState);
+    },
+  });
+};
+
+// comment mutation
+export const useCommentMutation = (postId: string) => {
+  const queryClient = useQueryClient();
+  const queryKey: QueryKey = ["comments", postId];
+
+  return useMutation({
+    mutationFn: createComment,
+    onSuccess: async (newComment) => {
+      // cancel outgoing request
+      await queryClient.cancelQueries({ queryKey });
+      // update cache
+      queryClient.setQueryData<InfiniteData<CommentPage, string | null>>(
+        queryKey,
+        (oldData) => {
+          const firstPage = oldData?.pages[0];
+
+          if (firstPage) {
+            return {
+              pageParams: oldData.pageParams,
+              pages: [
+                {
+                  previousCursor: firstPage.previousCursor,
+                  comments: [...firstPage.comments, newComment],
+                },
+                ...oldData.pages.slice(1),
+              ],
+            };
+          }
+        },
+      );
+
+      queryClient.invalidateQueries({
+        queryKey,
+        predicate(query) {
+          return !query.state.data;
+        },
+      });
+    },
+  });
+};
+
+// infinite comments query
+export const useCommentsInfiniteQuery = (postId: string) => {
+  return useInfiniteQuery({
+    queryKey: ["comments", postId],
+    queryFn: ({ pageParam }) =>
+      kyInstance
+        .get(
+          `/api/posts/${postId}/comments`,
+          pageParam
+            ? {
+                searchParams: { cursor: pageParam },
+              }
+            : {},
+        )
+        .json<CommentPage>(),
+    initialPageParam: null as string | null,
+    getNextPageParam: (firstPage) => firstPage.previousCursor,
+    select(data) {
+      return {
+        pages: [...data.pages].reverse(),
+        pageParams: [...data.pageParams].reverse(),
+      };
+    },
+  });
+};
+
+// delete comments mutations
+export const useDeleteCommentMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteComment,
+    onSuccess: async (deletedComment) => {
+      const queryKey: QueryKey = ["comments", deletedComment.postId];
+      // cancel outgoing queries
+      await queryClient.cancelQueries({ queryKey });
+      // update cache
+      queryClient.setQueryData<InfiniteData<CommentPage, string | null>>(
+        queryKey,
+        (oldData) => {
+          if (!oldData) return;
+
+          return {
+            pageParams: oldData.pageParams,
+            pages: oldData.pages.map((page) => ({
+              previousCursor: page.previousCursor,
+              comments: page.comments.filter(
+                (comment) => comment.id !== deletedComment.id,
+              ),
+            })),
+          };
+        },
+      );
     },
   });
 };

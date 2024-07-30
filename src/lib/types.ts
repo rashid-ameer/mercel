@@ -52,10 +52,30 @@ export const getPostDataInclude = (loggedInUserId: string) =>
     _count: {
       select: {
         likes: true,
+        comments: true,
       },
     },
     attachments: true,
   }) satisfies Prisma.PostInclude;
+
+export const getCommentDataInclude = (loggedInUserId: string) => {
+  return {
+    user: {
+      select: getUserDataSelect(loggedInUserId),
+    },
+  } satisfies Prisma.CommentInclude;
+};
+
+// comment type
+export type CommentData = Prisma.CommentGetPayload<{
+  include: ReturnType<typeof getCommentDataInclude>;
+}>;
+
+// comment page
+export type CommentPage = {
+  comments: CommentData[];
+  previousCursor: string | null;
+};
 
 // Post type
 export type TPost = Prisma.PostGetPayload<{
