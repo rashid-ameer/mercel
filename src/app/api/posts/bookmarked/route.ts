@@ -1,5 +1,5 @@
 import { validateRequest } from "@/auth";
-import { POSTS_PER_PAGE } from "@/lib/constants";
+import { PAGE_SIZE } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude, PagePost } from "@/lib/types";
 import { NextRequest } from "next/server";
@@ -22,13 +22,13 @@ export async function GET(req: NextRequest) {
           include: getPostDataInclude(user.id),
         },
       },
-      take: POSTS_PER_PAGE + 1,
+      take: PAGE_SIZE + 1,
       cursor: cursor ? { id: cursor } : undefined,
       orderBy: { createdAt: "desc" },
     });
 
     const nextCursor =
-      bookmarks.length > POSTS_PER_PAGE ? bookmarks[POSTS_PER_PAGE].id : null;
+      bookmarks.length > PAGE_SIZE ? bookmarks[PAGE_SIZE].id : null;
 
     const data: PagePost = {
       nextCursor,

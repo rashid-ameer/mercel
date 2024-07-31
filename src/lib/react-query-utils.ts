@@ -14,6 +14,8 @@ import {
   CommentPage,
   FollowersInfo,
   LikesInfo,
+  NotificationCountInfo,
+  NotificationPage,
   PagePost,
   UpdateUserProfile,
   UserData,
@@ -446,6 +448,57 @@ export const useDeleteCommentMutation = () => {
           };
         },
       );
+    },
+  });
+};
+
+// notification inifite query
+export const useNotificationsInfiniteQuery = () => {
+  return useInfiniteQuery({
+    queryKey: ["notifications"],
+    queryFn: ({ pageParam }) =>
+      kyInstance
+        .get(
+          "/api/notifications",
+          pageParam ? { searchParams: { cursor: pageParam } } : {},
+        )
+        .json<NotificationPage>(),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
+};
+
+// get notification count query
+export const useNotificationCountQuery = (
+  initialData: NotificationCountInfo,
+) => {
+  return useQuery({
+    queryKey: ["unread-notification-count"],
+    queryFn: () =>
+      kyInstance
+        .get("/api/notifications/unread-count")
+        .json<NotificationCountInfo>(),
+    initialData: initialData,
+    refetchInterval: 2 * 60 * 1000,
+  });
+};
+
+// use mark as read notification mutation
+export const useMarkAsReadMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => kyInstance.patch("/api/notifications/mark-read"),
+    onSuccess: async () => {
+      // query key
+      const queryKey: QueryKey = ["unread-notification-count"];
+      // update cache
+      queryClient.setQueryData<NotificationCountInfo>(queryKey, {
+        unreadCount: 0,
+      });
+    },
+    onError: () => {
+      console.error("Failed to mark notification as read");
     },
   });
 };

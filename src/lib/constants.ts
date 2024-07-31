@@ -22,6 +22,6 @@ export const MENUBAR_DATA = [
 ];
 
 // no of post per page
-export const POSTS_PER_PAGE = 10;
+export const PAGE_SIZE = 10;
 // no of comments
 export const COMMENTS_PER_PAGE = 5;

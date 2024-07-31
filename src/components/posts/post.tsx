@@ -34,7 +34,7 @@ function Post({ post }: PostProps) {
 
           <div className="flex flex-col">
             <Link
-              href={`/user/${post.user.username}`}
+              href={`/users/${post.user.username}`}
               className="font-medium hover:underline"
             >
               {post.user.displayName}

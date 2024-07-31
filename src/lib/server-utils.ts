@@ -60,3 +60,15 @@ export const getPost = cache(async (postId: string, loggedInUserId: string) => {
 
   return post;
 });
+
+// get the unread notification count from server
+export const getUnreadNotificationCount = async (id: string) => {
+  const unreadCount = await prisma.notification.count({
+    where: {
+      recipientId: id,
+      read: false,
+    },
+  });
+
+  return unreadCount;
+};

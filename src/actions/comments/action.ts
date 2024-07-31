@@ -24,15 +24,29 @@ export async function createComment({
     throw new Error("Invalid data format");
   }
 
-  // create comment
-  const newComment = prisma.comment.create({
-    data: {
-      content: validatedData.data.content,
-      userId: loggedInUser.id,
-      postId: post.id,
-    },
-    include: getCommentDataInclude(loggedInUser.id),
-  });
+  // prisma transaction
+  const [newComment] = await prisma.$transaction([
+    prisma.comment.create({
+      data: {
+        content: validatedData.data.content,
+        userId: loggedInUser.id,
+        postId: post.id,
+      },
+      include: getCommentDataInclude(loggedInUser.id),
+    }),
+    ...(post.user.id !== loggedInUser.id
+      ? [
+          prisma.notification.create({
+            data: {
+              issuerId: loggedInUser.id,
+              recipientId: post.user.id,
+              postId: post.id,
+              type: "COMMENT",
+            },
+          }),
+        ]
+      : []),
+  ]);
 
   return newComment;
 }
