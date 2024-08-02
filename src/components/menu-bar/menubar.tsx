@@ -2,8 +2,13 @@ import { MENUBAR_DATA } from "@/lib/constants";
 import MenuItem from "./menu-item";
 import { ICONS } from "./icons";
 import { NotificationButton } from "@/components/notification";
-import { getUnreadNotificationCount } from "@/lib/server-utils";
+import {
+  getUnreadMessagesCount,
+  getUnreadNotificationCount,
+} from "@/lib/server-utils";
 import { validateRequest } from "@/auth";
+import { Bell, Bookmark, Home, Mail } from "lucide-react";
+import { MessagesButton } from "../chat";
 
 interface MenuBarProps {
   className?: string;
@@ -17,32 +22,37 @@ async function MenuBar({ className }: MenuBarProps) {
     return null;
   }
 
-  const unreadCount = await getUnreadNotificationCount(user.id);
+  const [notificationUnreadCount, messagesUnreadCount] = await Promise.all([
+    getUnreadNotificationCount(user.id),
+    getUnreadMessagesCount(user.id),
+  ]);
 
   return (
     <ul className={className}>
-      {MENUBAR_DATA.map(({ label, icon, link }) => {
-        const Icon = ICONS[icon as keyof typeof ICONS];
-        if (label === "Notifications") {
-          return (
-            <li key={label}>
-              <NotificationButton
-                key={label}
-                label={label}
-                link={link}
-                icon={Icon}
-                initialData={{ unreadCount }}
-              />
-            </li>
-          );
-        }
+      <li>
+        <MenuItem icon={<Home />} label="Home" link="/" />
+      </li>
+      <li>
+        <NotificationButton
+          icon={<Bell />}
+          label="Notifcations"
+          link="/notifications"
+          initialData={{ unreadCount: notificationUnreadCount }}
+        />
+      </li>
 
-        return (
-          <li key={label}>
-            <MenuItem label={label} link={link} icon={Icon} />
-          </li>
-        );
-      })}
+      <li>
+        <MessagesButton
+          icon={<Mail />}
+          label="Messages"
+          link="/messages"
+          initialData={{ unreadCount: messagesUnreadCount }}
+        />
+      </li>
+
+      <li>
+        <MenuItem icon={<Bookmark />} label="Bookmarks" link="/bookmarks" />
+      </li>
     </ul>
   );
 }

@@ -3,6 +3,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { updateUserProfileSchema } from "@/lib/schemas";
+import streamServerClient from "@/lib/stream";
 import { getUserDataSelect } from "@/lib/types";
 
 export async function updateUserProfile(profileData: unknown) {
@@ -17,13 +18,24 @@ export async function updateUserProfile(profileData: unknown) {
     throw new Error("Unauthorized");
   }
 
-  // update user profile
-  const updatedUser = await prisma.user.update({
-    where: {
+  const updatedUser = await prisma.$transaction(async (tx) => {
+    // update user profile
+    const updatedUser = await tx.user.update({
+      where: {
+        id: user.id,
+      },
+      data: validationResult.data,
+      select: getUserDataSelect(user.id),
+    });
+
+    await streamServerClient.partialUpdateUser({
       id: user.id,
-    },
-    data: validationResult.data,
-    select: getUserDataSelect(user.id),
+      set: {
+        name: updatedUser.displayName,
+      },
+    });
+
+    return updatedUser;
   });
 
   return updatedUser;

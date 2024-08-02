@@ -150,3 +150,8 @@ export interface Attachment {
 export interface BookmarkInfo {
   isBookmarkedByUser: boolean;
 }
+
+// messages unread count
+export interface MessagesCountInfo {
+  unreadCount: number;
+}

@@ -3,6 +3,7 @@
 import { lucia } from "@/auth";
 import prisma from "@/lib/prisma";
 import { signupSchema } from "@/lib/schemas";
+import streamServerClient from "@/lib/stream";
 import { hash } from "@node-rs/argon2";
 import { generateIdFromEntropySize } from "lucia";
 import {
@@ -63,15 +64,23 @@ export async function signup(credentials: unknown): Promise<{ error: string }> {
       return { error: "Email already exists." };
     }
 
-    // create the new user
-    await prisma.user.create({
-      data: {
+    await prisma.$transaction(async (tx) => {
+      // create the new user
+      await tx.user.create({
+        data: {
+          id: userId,
+          username,
+          displayName: username,
+          email,
+          passwordHash,
+        },
+      });
+
+      await streamServerClient.upsertUser({
         id: userId,
+        name: username,
         username,
-        displayName: username,
-        email,
-        passwordHash,
-      },
+      });
     });
 
     // create a session

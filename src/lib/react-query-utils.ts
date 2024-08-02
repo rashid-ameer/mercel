@@ -14,6 +14,7 @@ import {
   CommentPage,
   FollowersInfo,
   LikesInfo,
+  MessagesCountInfo,
   NotificationCountInfo,
   NotificationPage,
   PagePost,
@@ -26,6 +27,9 @@ import { HTTPError } from "ky";
 import { updateUserProfile } from "@/actions/user/actions";
 import { useUploadThing } from "@/lib/uploadthing";
 import { createComment, deleteComment } from "@/actions/comments/action";
+import { StreamChat, UserResponse } from "stream-chat";
+import { DefaultStreamChatGenerics, useChatContext } from "stream-chat-react";
+import { User } from "lucia";
 
 // loading infinite posts request
 export const usePostsInfiniteQuery = (
@@ -500,5 +504,77 @@ export const useMarkAsReadMutation = () => {
     onError: () => {
       console.error("Failed to mark notification as read");
     },
+  });
+};
+
+// use serach stream users query
+export const useSearchStreamUsers = (
+  value: string,
+  user: User,
+  client: StreamChat<DefaultStreamChatGenerics>,
+) => {
+  return useQuery({
+    queryKey: ["stream-users", value],
+    queryFn: async () =>
+      client.queryUsers(
+        {
+          id: { $ne: user.id },
+          role: { $ne: "admin" },
+          ...(value
+            ? {
+                $or: [
+                  { name: { $autocomplete: value } },
+                  { username: { $autocomplete: value } },
+                ],
+              }
+            : {}),
+        },
+        {
+          name: 1,
+          username: 1,
+        },
+        {
+          limit: 15,
+        },
+      ),
+  });
+};
+
+// use create chat mutation
+export const useCreateChatMutation = () => {
+  return useMutation({
+    mutationFn: async ({
+      client,
+      user,
+      selectedUsers,
+    }: {
+      client: StreamChat<DefaultStreamChatGenerics>;
+      user: User;
+      selectedUsers: UserResponse<DefaultStreamChatGenerics>[];
+    }) => {
+      const channel = client.channel("messaging", {
+        members: [user.id, ...selectedUsers.map((user) => user.id)],
+        name:
+          selectedUsers.length > 1
+            ? user.displayName +
+              ", " +
+              selectedUsers.map((user) => user.displayName).join(", ")
+            : undefined,
+      });
+
+      await channel.create();
+      return channel;
+    },
+  });
+};
+
+// get notification count query
+export const useMessagesCountQuery = (initialData: MessagesCountInfo) => {
+  return useQuery({
+    queryKey: ["unread-messages-count"],
+    queryFn: () =>
+      kyInstance.get("/api/messages/unread-count").json<MessagesCountInfo>(),
+    initialData: initialData,
+    refetchInterval: 60 * 1000,
   });
 };

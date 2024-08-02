@@ -3,6 +3,7 @@ import prisma from "./prisma";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import { getPostDataInclude, getUserDataSelect } from "@/lib/types";
+import streamServerClient from "./stream";
 
 // get the top 5 trending topics
 export const getTrendingTopics = unstable_cache(
@@ -71,4 +72,9 @@ export const getUnreadNotificationCount = async (id: string) => {
   });
 
   return unreadCount;
+};
+
+export const getUnreadMessagesCount = async (id: string) => {
+  const { total_unread_count } = await streamServerClient.getUnreadCount(id);
+  return total_unread_count;
 };
