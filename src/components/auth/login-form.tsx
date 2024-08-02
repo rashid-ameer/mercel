@@ -51,7 +51,7 @@ function LoginForm() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="John" />
+                <Input {...field} placeholder="John" disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -64,7 +64,11 @@ function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <PasswordInput {...field} placeholder="John" />
+                <PasswordInput
+                  {...field}
+                  placeholder="John"
+                  disabled={isPending}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

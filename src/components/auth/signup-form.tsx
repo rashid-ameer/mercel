@@ -53,7 +53,7 @@ function SignupForm() {
             <FormItem>
               <FormLabel className="">Username</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="John" />
+                <Input {...field} placeholder="John" disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -66,7 +66,12 @@ function SignupForm() {
             <FormItem>
               <FormLabel className="">Email</FormLabel>
               <FormControl>
-                <Input {...field} type="email" placeholder="john@gmail.com" />
+                <Input
+                  {...field}
+                  type="email"
+                  placeholder="john@gmail.com"
+                  disabled={isPending}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -83,6 +88,7 @@ function SignupForm() {
                   {...field}
                   type="password"
                   placeholder="john786@%"
+                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
