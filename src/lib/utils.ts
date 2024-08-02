@@ -26,3 +26,10 @@ export function getFormattedNumber(n: number) {
     maximumFractionDigits: 1,
   }).format(n);
 }
+
+export function slugify(input: string) {
+  return input
+    .toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+}

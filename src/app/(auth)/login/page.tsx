@@ -8,6 +8,7 @@ import {
   AuthTop,
   LoginForm,
 } from "@/components/auth";
+import { GoogleSignInButton } from "@/components";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -21,6 +22,14 @@ function Login() {
         <AuthTop>
           <AuthHeading title="Login" />
         </AuthTop>
+
+        <GoogleSignInButton />
+
+        <div className="my-5 flex items-center gap-2">
+          <span className="h-px flex-1 bg-muted" />
+          <span>OR</span>
+          <span className="h-px flex-1 bg-muted" />
+        </div>
 
         {/* Login form */}
         <LoginForm />
