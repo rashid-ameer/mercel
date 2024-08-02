@@ -74,7 +74,27 @@ export const getUnreadNotificationCount = async (id: string) => {
   return unreadCount;
 };
 
+// get the unread messages count from server
 export const getUnreadMessagesCount = async (id: string) => {
   const { total_unread_count } = await streamServerClient.getUnreadCount(id);
   return total_unread_count;
+};
+
+// get followers information
+export const getUsersToFollow = async (id: string) => {
+  const userToFollow = await prisma.user.findMany({
+    where: {
+      NOT: {
+        id: id,
+      },
+      followers: {
+        none: {
+          followerId: id,
+        },
+      },
+    },
+    select: getUserDataSelect(id),
+    take: 5,
+  });
+  return userToFollow;
 };
