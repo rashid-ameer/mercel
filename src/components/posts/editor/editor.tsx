@@ -76,6 +76,7 @@ function PostEditor() {
       },
       {
         onSuccess: () => {
+          editor?.commands.clearContent();
           resetMedia();
           toast({ description: "Post created successfully." });
         },
@@ -87,7 +88,6 @@ function PostEditor() {
         },
       },
     );
-    editor?.commands.clearContent();
   };
 
   // paste function
@@ -105,6 +105,7 @@ function PostEditor() {
         <div {...rootProps} className="w-full">
           <EditorContent
             editor={editor}
+            disabled={postCreateMutation.isPending}
             className={cn(
               "max-h-[20rem] min-h-[7rem] flex-1 overflow-y-auto rounded-xl bg-muted px-5 py-3",
               { "outline-dashed": isDragActive },
@@ -130,7 +131,11 @@ function PostEditor() {
           </>
         )}
         <UploadAttachmentButton
-          disabled={isUploading || attachments.length >= 5}
+          disabled={
+            isUploading ||
+            attachments.length >= 5 ||
+            postCreateMutation.isPending
+          }
           onFilesSelected={startUpload}
         />
         <Button
