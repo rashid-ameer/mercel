@@ -12,3 +12,4 @@ export { default as EditProfileDialog } from "@/components/edit-profile-dialog";
 export { default as CropImageDialog } from "@/components/crop-image-dialog";
 export { default as BookmarkedFeed } from "@/components/bookmark-feed";
 export { default as GoogleSignInButton } from "@/components/google-signin-button";
+export { default as SearchResults } from "@/components/serach-results";

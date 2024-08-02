@@ -578,3 +578,19 @@ export const useMessagesCountQuery = (initialData: MessagesCountInfo) => {
     refetchInterval: 60 * 1000,
   });
 };
+
+// serach reuslts infinite query
+export const useSearchInfiniteQuery = (q: string) => {
+  return useInfiniteQuery({
+    queryKey: ["post-feed", "search", q],
+    queryFn: ({ pageParam }) =>
+      kyInstance
+        .get("/api/search", {
+          searchParams: { q, ...(pageParam ? { cursor: pageParam } : {}) },
+        })
+        .json<PagePost>(),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    gcTime: 0,
+  });
+};
