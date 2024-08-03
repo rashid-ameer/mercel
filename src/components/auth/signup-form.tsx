@@ -15,7 +15,8 @@ import { signupSchema } from "@/lib/schemas";
 import { Input } from "@/components/ui/input";
 import { useState, useTransition } from "react";
 import { signup } from "@/app/(auth)/signup/action";
-import { LoadingButton, PasswordInput } from "@/components/auth";
+import { PasswordInput } from "@/components/auth";
+import { LoadingButton } from "@/components";
 
 function SignupForm() {
   const [error, setError] = useState<string>();

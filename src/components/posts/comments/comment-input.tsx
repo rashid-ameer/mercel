@@ -1,7 +1,7 @@
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { SendHorizonal } from "lucide-react";
-import { CircularLoader } from "../loaders";
-import { Input } from "../ui/input";
+import { CircularLoader } from "@/components/loaders";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useCommentMutation } from "@/lib/react-query-utils";
 import { TPost } from "@/lib/types";

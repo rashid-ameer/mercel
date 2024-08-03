@@ -5,5 +5,4 @@ export { default as AuthHeading } from "@/components/auth/auth-heading";
 export { default as AuthImage } from "@/components/auth/auth-image";
 export { default as AuthTop } from "@/components/auth/auth-top";
 export { default as AuthRedirect } from "@/components/auth/auth-redirect";
-export { default as LoadingButton } from "@/components/auth/loading-button";
 export { default as PasswordInput } from "@/components/auth/password-input";

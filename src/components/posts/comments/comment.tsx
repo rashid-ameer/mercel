@@ -1,8 +1,8 @@
 "use client";
 import { CommentData } from "@/lib/types";
-import UserTooltip from "../user-tooltip";
+import UserTooltip from "../../user-tooltip";
 import Link from "next/link";
-import UserAvatar from "../user-avatar";
+import UserAvatar from "../../user-avatar";
 import { getRelativeTime } from "@/lib/utils";
 import useSession from "@/hooks/useSessionProvider";
 import CommentMoreButton from "./comment-more-button";

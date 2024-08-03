@@ -15,11 +15,9 @@ import { Check, SearchIcon, X } from "lucide-react";
 import { useState } from "react";
 import { UserResponse } from "stream-chat";
 import { DefaultStreamChatGenerics, useChatContext } from "stream-chat-react";
-import { Input } from "../ui/input";
-import UserAvatar from "../user-avatar";
 import { CircularLoader } from "../loaders";
-import { LoadingButton } from "../auth";
-import { useToast } from "../ui/use-toast";
+import { LoadingButton, UserAvatar } from "@/components";
+import { useToast } from "@/components/ui/use-toast";
 
 interface NewChatDialogProps {
   onOpenChange: (open: boolean) => void;

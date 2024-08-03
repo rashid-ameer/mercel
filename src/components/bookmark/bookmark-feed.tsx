@@ -1,11 +1,11 @@
 "use client";
 import { Feed } from "@/components";
 import { usePostsInfiniteQuery } from "@/lib/react-query-utils";
-import Post from "./post";
+import { Post } from "@/components/posts";
 
-function PostFeed() {
+function BookmarkFeed() {
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
-    usePostsInfiniteQuery("posts/for-you", ["post-feed", "for-you"]);
+    usePostsInfiniteQuery("posts/bookmarked", ["post-feed", "bookmarks"]);
 
   const handleBottomReached = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -21,8 +21,8 @@ function PostFeed() {
       isFetchingNextPage={isFetchingNextPage}
       hasNextPage={hasNextPage}
       status={status}
-      errMessage="An error occured while fetching posts"
-      noDataMessage="No posts to show. Try making posts."
+      errMessage="An error occured while fetching bookmarked posts"
+      noDataMessage="No bookmarked posts found"
       onBottomReached={handleBottomReached}
     >
       {posts.map((post) => (
@@ -31,4 +31,4 @@ function PostFeed() {
     </Feed>
   );
 }
-export default PostFeed;
+export default BookmarkFeed;

@@ -8,10 +8,9 @@ import useSession from "@/hooks/useSessionProvider";
 import { Linkify, UserTooltip } from "@/components";
 import Image from "next/image";
 import LikeButton from "./like-button";
-import BookmarkButton from "./bookmark-button";
 import { useState } from "react";
-import CommentButton from "./comment-button";
-import Comments from "./comments";
+import { BookmarkButton } from "@/components/bookmark";
+import { CommentButton, Comments } from "@/components/posts/comments";
 
 interface PostProps {
   post: TPost;

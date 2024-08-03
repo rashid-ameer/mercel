@@ -3,8 +3,8 @@ import { TPost } from "@/lib/types";
 
 import CommentInput from "./comment-input";
 import Comment from "./comment";
-import { Button } from "../ui/button";
-import { CircularLoader } from "../loaders";
+import { Button } from "../../ui/button";
+import { CircularLoader } from "@/components/loaders";
 
 interface CommentsProps {
   post: TPost;

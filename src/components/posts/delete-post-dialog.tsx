@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useDeletePostMutation } from "@/lib/react-query-utils";
-import { LoadingButton } from "@/components/auth";
+import { LoadingButton } from "@/components";
 import { Button } from "@/components/ui/button";
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";

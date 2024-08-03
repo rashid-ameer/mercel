@@ -1,4 +1,4 @@
-import { BookmarkedFeed } from "@/components";
+import { BookmarkedFeed } from "@/components/bookmark";
 import { TrendsSidebar } from "@/components/trends";
 
 function BookmarksPage() {
@@ -8,7 +8,6 @@ function BookmarksPage() {
         <div className="rounded-2xl bg-card p-5 shadow-sm">
           <h1 className="text-center text-2xl font-bold">Bookmarks</h1>
         </div>
-
         <BookmarkedFeed />
       </div>
       <TrendsSidebar />

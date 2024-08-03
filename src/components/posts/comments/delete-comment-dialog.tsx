@@ -7,11 +7,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { LoadingButton } from "../auth";
+import { LoadingButton } from "@/components";
 import { useToast } from "@/components/ui/use-toast";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 interface DeleteCommentDialogProps {
   comment: CommentData;
