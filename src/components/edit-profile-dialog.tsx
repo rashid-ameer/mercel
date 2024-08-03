@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { LoadingButton } from "@/components/auth";
+import { LoadingButton } from "@/components";
 import { useUserUpdateProfileMutation } from "@/lib/react-query-utils";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
