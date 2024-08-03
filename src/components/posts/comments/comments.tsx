@@ -1,6 +1,5 @@
 import { useCommentsInfiniteQuery } from "@/lib/react-query-utils";
 import { TPost } from "@/lib/types";
-
 import CommentInput from "./comment-input";
 import Comment from "./comment";
 import { Button } from "../../ui/button";

@@ -26,7 +26,7 @@ function Post({ post }: PostProps) {
       <div className="flex items-center justify-between gap-3">
         <div className="flex gap-3">
           <UserTooltip user={post.user}>
-            <Link href={`/posts/${post.user.username}`}>
+            <Link href={`/posts/${post.id}`}>
               <UserAvatar avatarUrl={post.user.avatarUrl} />
             </Link>
           </UserTooltip>

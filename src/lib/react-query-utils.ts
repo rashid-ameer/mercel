@@ -359,7 +359,7 @@ export const useBookmarkMutation = (queryKey: QueryKey) => {
 };
 
 // comment mutation
-export const useCommentMutation = (postId: string) => {
+export const useCommentMutation = (postId: string, userId: string) => {
   const queryClient = useQueryClient();
   const queryKey: QueryKey = ["comments", postId];
 
@@ -386,6 +386,46 @@ export const useCommentMutation = (postId: string) => {
               ],
             };
           }
+        },
+      );
+
+      // query filters
+      const queryFilter = {
+        queryKey: ["post-feed"],
+        predicate: (query) =>
+          query.queryKey.includes("for-you") ||
+          (query.queryKey.includes("user-posts") &&
+            query.queryKey.includes(userId)),
+      } satisfies QueryFilters;
+      // cancel any ongoing queries
+      await queryClient.cancelQueries(queryFilter);
+
+      queryClient.setQueriesData<InfiniteData<PagePost, string | null>>(
+        queryFilter,
+        (oldData) => {
+          if (!oldData) return;
+
+          return {
+            pageParams: oldData.pageParams,
+            pages: oldData.pages.map((page) => {
+              return {
+                nextCursor: page.nextCursor,
+                posts: page.posts.map((post) => {
+                  if (post.id === newComment.postId) {
+                    return {
+                      ...post,
+                      _count: {
+                        ...post._count,
+                        comments: post._count.comments + 1,
+                      },
+                    };
+                  }
+
+                  return post;
+                }),
+              };
+            }),
+          };
         },
       );
 

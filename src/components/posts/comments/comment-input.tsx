@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useCommentMutation } from "@/lib/react-query-utils";
 import { TPost } from "@/lib/types";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 interface CommentsProps {
   post: TPost;
@@ -12,17 +14,32 @@ interface CommentsProps {
 
 function CommentInput({ post }: CommentsProps) {
   const [input, setInput] = useState("");
+  const router = useRouter();
+  const { toast } = useToast();
 
   // comment mutation
-  const commentMutation = useCommentMutation(post.id);
+  const commentMutation = useCommentMutation(post.id, post.userId);
 
   // handle comment submit
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    commentMutation.mutate({ post, content: input });
-    setInput("");
+    commentMutation.mutate(
+      { post, content: input },
+      {
+        onSuccess: () => {
+          setInput("");
+          router.refresh();
+        },
+        onError: () => {
+          toast({
+            variant: "destructive",
+            description: "An error occured while creating comment. Try again.",
+          });
+        },
+      },
+    );
   };
 
   return (

@@ -1,7 +1,6 @@
 "use client";
-import { InfiniteScroll } from "@/components";
+import { Feed } from "@/components";
 import Post from "./post";
-import { CircularLoader, PostsLoadingSkeleton } from "@/components/loaders";
 import { usePostsInfiniteQuery } from "@/lib/react-query-utils";
 
 interface PostFeedProps {
@@ -9,18 +8,12 @@ interface PostFeedProps {
 }
 
 function UserFeed({ userId }: PostFeedProps) {
-  const {
-    data,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-    status,
-    error,
-  } = usePostsInfiniteQuery(`users/${userId}/posts`, [
-    "post-feed",
-    "user-posts",
-    userId,
-  ]);
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
+    usePostsInfiniteQuery(`users/${userId}/posts`, [
+      "post-feed",
+      "user-posts",
+      userId,
+    ]);
 
   const handleBottomReached = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -31,28 +24,19 @@ function UserFeed({ userId }: PostFeedProps) {
   const posts = data?.pages.flatMap((page) => page.posts) ?? [];
 
   return (
-    <>
-      <InfiniteScroll
-        className="space-y-5"
-        onBottomReached={handleBottomReached}
-      >
-        {status === "pending" && <PostsLoadingSkeleton />}
-        {status === "error" && (
-          <p className="text-center text-destructive">{error.message}</p>
-        )}
-        {status === "success" && posts.length === 0 && !hasNextPage && (
-          <p className="text-center text-muted-foreground">
-            This user has not posted yet.
-          </p>
-        )}
-
-        {posts.map((post) => (
-          <Post key={post.id} post={post} />
-        ))}
-
-        {isFetchingNextPage && <CircularLoader />}
-      </InfiniteScroll>
-    </>
+    <Feed
+      data={posts}
+      isFetchingNextPage={isFetchingNextPage}
+      hasNextPage={hasNextPage}
+      status={status}
+      errMessage="An error occured while fetching posts"
+      noDataMessage="No posts found"
+      onBottomReached={handleBottomReached}
+    >
+      {posts.map((post) => (
+        <Post key={post.id} post={post} />
+      ))}
+    </Feed>
   );
 }
 export default UserFeed;
