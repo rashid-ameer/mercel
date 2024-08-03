@@ -1,6 +1,6 @@
 import { validateRequest } from "@/auth";
 import { FollowButton, Linkify, UserAvatar, UserTooltip } from "@/components";
-import { CircularLoader } from "@/components/loaders";
+import { CircularLoader, UserInfoSidebarSkeleton } from "@/components/loaders";
 import { Post } from "@/components/posts";
 import { getPost } from "@/lib/server-utils";
 import { UserData } from "@/lib/types";
@@ -43,9 +43,7 @@ async function PostPage({ params: { postId } }: PostPageProps) {
         <Post post={post} />
       </div>
       <div className="sticky top-[8.25rem] hidden w-80 flex-none lg:block">
-        <Suspense fallback={<CircularLoader />}>
-          <UserInfoSidebar user={post.user} />
-        </Suspense>
+        <UserInfoSidebarWrapper user={post.user} />
       </div>
     </main>
   );
@@ -57,21 +55,35 @@ interface UserInfoSidebarProps {
   className?: string;
 }
 
-async function UserInfoSidebar({ user, className }: UserInfoSidebarProps) {
-  const { user: loggedInUser } = await validateRequest();
-
-  await new Promise((resolve) => setTimeout(resolve, 4000));
-
-  if (!loggedInUser) return null;
-
+async function UserInfoSidebarWrapper({
+  user,
+  className,
+}: UserInfoSidebarProps) {
   return (
     <div
       className={cn("space-y-5 rounded-2xl bg-card p-5 shadow-sm", className)}
     >
       <h2 className="text-xl font-bold">About this user</h2>
 
+      <Suspense fallback={<UserInfoSidebarSkeleton />}>
+        <UserInfoSidebar user={user} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function UserInfoSidebar({ user }: UserInfoSidebarProps) {
+  const { user: loggedInUser } = await validateRequest();
+
+  if (!loggedInUser) return null;
+
+  return (
+    <>
       <UserTooltip user={user}>
-        <Link href={`/users/${user.username}}`} className="block">
+        <Link
+          href={`/users/${user.username}}`}
+          className="flex flex-wrap gap-x-3"
+        >
           <UserAvatar avatarUrl={user.avatarUrl} />
 
           <div>
@@ -85,11 +97,13 @@ async function UserInfoSidebar({ user, className }: UserInfoSidebarProps) {
         </Link>
       </UserTooltip>
 
-      <Linkify>
-        <p className="line-clamp-6 whitespace-pre-line break-words text-muted-foreground">
-          {user.bio}
-        </p>
-      </Linkify>
+      {user.bio && (
+        <Linkify>
+          <p className="line-clamp-6 whitespace-pre-line break-words text-muted-foreground">
+            {user.bio}
+          </p>
+        </Linkify>
+      )}
 
       {user.id !== loggedInUser.id && (
         <FollowButton
@@ -100,6 +114,6 @@ async function UserInfoSidebar({ user, className }: UserInfoSidebarProps) {
           }}
         />
       )}
-    </div>
+    </>
   );
 }
