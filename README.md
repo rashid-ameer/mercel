@@ -7,3 +7,9 @@ Mercel is a social media website developed using Next.js framework with followin
 - Follow other users
 - View posts
 - Message other users
+
+## Libraries
+- Lucia Auth
+- Upload thing
+- Streamlit
+- 
